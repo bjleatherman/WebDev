@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div> <!--TODO: remove me-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ResizeGrid-ClickSetNotWorking</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>  
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>    
+    </div> <!--TODO: remove me-->
+    <style>
+
+        .wrapper {
+            border: 3px solid black;
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+        }
+
+        .box {
+            border: 1px solid black;
+            /* background-color: darkblue;*//* uncomment to fix map hover */
+            color: white;
+            text-align: center;
+            background: url(/pics/water.jpg) darkblue;
+            background-size: contain;
+            font-size: 2vw; /*vw = view width*/
+        }
+
+        .island{
+            /*background-color: green;*//*uncomment to fix map hover */ 
+            background: url(/pics/island.jpg) green;
+        }
+
+        .list-group-item {
+            word-wrap: break-word;
+            margin: 0;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .fill-width{
+            width: 100%;
+        }
+
+        .w3-footer{
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+    </style>
+    
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CSO</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Test">Test</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="container-fluid">     <!--Beginning of Main Content-->
+        <div class="row">                     <!--Beginning of Progress Bar Section -->
+            <div class="col-md-2">
+                <h3>
+                    Health
+                </h3>
+                <div class="progress" id="master-progress-bar">
+                    <div class="progress-bar bg-danger" id="health-bar" style="width: 100%">4/4
+                    </div>
+                </div>
+                <br>
+                <button type="button" class="btn btn-danger" id="btn-damage" onclick="modifyProgress('health-bar', -4)">Damage</button>
+            </div>
+            <div class="col-md-2">
+                <h3>
+                    Mines
+                </h3>
+                <div class="progress">
+                    <div class="progress-bar" id="power-1" style="width: 0%">
+                        0/3
+                    </div>
+                </div>
+                <br>
+                <button type="button" class="btn btn-primary" id="btn-pow-1" onclick="modifyProgress('power-1', 3)">Charge</button>
+            </div>
+            <div class="col-md-2">
+                <h3>
+                    Drones
+                </h3>
+                <div class="progress">
+                    <div class="progress-bar" id="power-2" style="width: 0%">
+                        0/3
+                    </div>
+                </div>
+                <br>
+                <button type="button" class="btn btn-primary" id="btn-pow-2" onclick="modifyProgress('power-2', 4)">Charge</button>
+            </div>
+            <div class="col-md-2">
+                <h3>
+                    Sneak
+                </h3>
+                <div class="progress">
+                    <div class="progress-bar" id="power-3" style="width: 0%">
+                        0/3
+                    </div>
+                </div>
+                <br>
+                <button type="button" class="btn btn-primary" id="btn-pow-3" onclick="modifyProgress('power-3', 6)">Charge</button>
+            </div>
+            <div class="col-md-2">
+                <h3>
+                    Torpedo
+                </h3>
+                <div class="progress">
+                    <div class="progress-bar" id="power-4" style="width: 0%">
+                        0/3
+                    </div>
+                </div>
+                <br>
+                <button type="button" class="btn btn-primary" id="btn-pow-4" onclick="modifyProgress('power-4', 3)">Charge</button>
+            </div>
+            <div class="col-md-2">
+                <h3>
+                    Sonar
+                </h3>
+                <div class="progress">
+                    <div class="progress-bar" id="power-5" style="width: 0%">
+                        0/3
+                    </div>
+                </div>
+                <br>
+                <button type="button" class="btn btn-primary" id="btn-pow-5" onclick="modifyProgress('power-5', 3)">Charge</button>
+            </div>
+        </div>
+        <hr>
+        <div class="row">                     <!--Beginning of Game Board Section-->
+            <div class="col-md-2">            <!--Beginning of Explainer Boxes-->              
+                <ul class="list-group">
+                  <li class="list-group-item bw">
+                      Viewing:
+                      <br>
+                    <button type="button" class="btn btn-warning fill-width" id="btn-map_toggle" onclick="toggleMaps('btn-map_toggle')">Your Map</button>
+                  </li>
+                  <li class="list-group-item bw">
+                    <button type="button" class="btn btn-warning fill-width" id="btn-reset-maps" onclick="resetMaps()">Reset Player Path</button>
+                  </li>
+                  <li class="list-group-item bw">
+                    <button type="button" class="btn btn-warning fill-width" id="btn-new-map">New Map</button>  
+                  </li>
+                  <li class="list-group-item bw">Porta ac consectetur ac</li>
+                  <li class="list-group-item bw">Vestibulum at eros</li>
+                </ul>
+		    </div>
+            <div class="col-md-10">           <!--Beginning of Game Board-->
+                <div class="wrapper"></div>   <!--Game Board-->  
+            </div>
+        </div>
+    </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted w3-footer">
+        <div class="container">
+            &copy; 2020 - CSO - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    
+    <script src="js\game.js"></script>
+    <script>
+        //declaring some variables: These should be replaced with JSON doc at some point
+        
+        let userMap = [];
+        let enemyMap = ['N','N','E','E','S','E','E','N','N','W'];
+        let mapSize = 15; //TODO: need to append CSS GRID to reflect side size && dynamically find centers
+        let islandList = [];
+        let parentIslandGenerationThreshold = .55; //0-1 percentage chance
+        let childIslandGenerationThreshold = .3;   //0-1 percentage chance
+        let health = 4; //starting value
+        let mines = 0; //starting value
+        let drones = 0; //starting value
+        let sneak = 0; //starting value
+        let torpedo = 0; //starting value
+        let sonar = 0; //starting value
+        let healthMax = 0;
+        let minesMax = 3;
+        let dronesMax = 4;
+        let sneakMax = 6;
+        let torpedoMax = 3;
+        let sonarMax = 3;
+
+        //center divs for a 3x3 supergrid, used to seed generateTerrain
+        //TODO: implement find section centers in createGrid();
+        let sectionCenters =  [32,37,42,107,112,117,182,187,192];
+
+        //toggle enemyMap and userMap
+        let userMapToggle = true;
+
+        //TODO: DEBUGING REMOVVE ME
+        //console.log("Initializeing cIGT: "+childIslandGenerationThreshold);
+
+        //CONFIGURATION ATTEMPT: //TODO:make this into a JSON doc
+        let gameConfig = new GameConfig(userMap, enemyMap, mapSize, islandList, parentIslandGenerationThreshold, childIslandGenerationThreshold, health, mines, drones, sneak, torpedo, sonar, healthMax, minesMax, dronesMax, sneakMax, torpedoMax, sonarMax);
+
+        ///////////////////////////////////////////////////////////////////////////////////
+
+        //creates a game board, currently hardcoded to 15x15
+        function createGrid(x){ //TODO: add parameter to change board size
+            $(".wrapper").css("grid-template-columns", "repeat("+x+", 1fr)");
+            $(".wrapper").css("grid-template-rows", "repeat("+x+", 1fr)");
+
+            x *= x; //x = side length, sides squared to make square
+
+            for(let i = 0; i < x; i++){ //TODO: see above
+                //$(".wrapper").append("<div class='box' id='"+i+"'>"+i+"</div>"); //numbers shown
+                $(".wrapper").append("<div class='box' id='"+i+"'></div>"); //numbers hidden
+            }
+            $(".box").height($(".box").width());
+        }
+
+        //generates Terrain with RNG and prayer
+        //needs to be refactored...I hate it lol
+        function generateTerrain(x,y){
+
+            let checkLocation = 0;
+            let childCount = 0;
+
+            for (let i = 0; i < sectionCenters.length; i++) {
+
+                if(Math.random() <= x){ //if RNG is within parentIslandGenerationThreshold
+                    $('#'+sectionCenters[i]).addClass(" island"); //add island class to the current div
+                    checkLocation = sectionCenters[i] - 16;
+                    
+                    for(let j = 0; j < 8; j++){ //used to give childIslands chance to spawn //TODO: super ugly/ magic #s
+                        if(Math.random() <= y){
+                            $('#'+checkLocation).addClass(" island"); //add island class to the current div
+                        }
+                        if(childCount < 2){
+                            checkLocation ++;
+                            childCount ++;
+                        }else{
+                            if(childCount == 2){
+                                checkLocation += 13;
+                                childCount ++;
+                            }else{
+                                if(childCount ==3){
+                                    checkLocation += 2;
+                                    childCount ++;
+                                }else{
+                                    if(childCount == 4){
+                                        checkLocation += 13;
+                                        childCount ++;
+                                    }else{
+                                        if(childCount > 4){
+                                            checkLocation ++;
+                                            childCount++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    childCount = 0;
+                }
+            }
+        }
+
+        //This section allows the game board to move and maintain its square-ness
+        //video url: https://www.youtube.com/watch?v=AnOAZsezLEg
+        let resizeWrapper = function(){
+            let eventHandler = function(event){
+                $(".box").height($(".box").width());
+            };
+            window.addEventListener('resize', eventHandler, false);
+        }
+
+        //TODO: Border detection && remove magic #/colors
+        //      create convert Map function that gives array of nums
+        //      change color changer to class addition like islands
+        //      selecting and rotating correct images
+        //draws the enemy map relative to Users mouse location on
+        function drawEnemyMap(id, drawing){
+            let testMap = enemyMap;
+            let subLine = id;
+
+            for(let i = testMap.length; i >= 0; i--){
+                //since testMap operating like a stack, subLine directions are reversed
+                //e.g. N command will translate subLine South
+                switch(testMap[i]){
+                    case 'N':
+                        subLine = subLine*1 + mapSize*1;
+                        break;
+                    case 'S':
+                        subLine = subLine*1 - mapSize*1;
+                        break;
+                    case 'E':
+                        subLine = subLine*1 - 1*1; 
+                        break;
+                    case 'S':
+                        subLine = subLine*1 + 1*1; 
+                        break;
+                    default: //something is hitting here everytime
+                        //(console.log)("Draw Switch ERROR");
+                        break;
+                }
+                
+                /*if (drawing ==true){
+                    //TODO: maybe add flag for island collision detection here
+                    //highlights if a div has been designated an island
+                    if($("#"+subLine).hasClass("island") == true){
+                        $("#"+subLine).css("background-color", "red");
+                    } else {
+                        $("#"+subLine).css("background-color", "yellow");
+                            //highlight Users mouse location if mouse hovers ocean
+                            //TODO: probably a better way to highlight mouse location
+                            if($("#"+id).hasClass("island") == false){
+                                $("#"+id).css("background-color", "orange");
+                            }
+                    }
+                } else {
+                    //TODO: figure out how to restore to default color
+                    //restores islands to the green color
+                    if($("#"+subLine).hasClass("island") == true){
+                        $("#"+subLine).css("background-color", "green");
+                    } else {
+                        $("#"+subLine).css("background-color", "darkblue");
+                    }
+                }*/
+
+                if (drawing ==true){
+                    //TODO: maybe add flag for island collision detection here
+                    //highlights if a div has been designated an island
+                    if($("#"+subLine).hasClass("island") == true){ 
+                        $("#"+subLine).css("background", "red");
+                    } else {
+                        $("#"+subLine).css("background", "url(/pics/straight-user-path.jpg)");
+                        $("#"+subLine).css("background-size", "contain");
+                            //highlight Users mouse location if mouse hovers ocean
+                            //TODO: probably a better way to highlight mouse location
+                            if($("#"+id).hasClass("island") == false){
+                                $("#"+id).css("background", "url(/pics/user-sub.jpg)");
+                                $("#"+id).css("background-size", "contain");
+                            }
+                    }
+                } else {
+                    //TODO: figure out how to restore to default color
+                    //restores islands to the green color
+                    if($("#"+subLine).hasClass("island") == true){
+                        $("#"+subLine).css("background", "url(/pics/island.jpg)");
+                        $("#"+subLine).css("background-size", "contain");
+                    } else {
+                        $("#"+subLine).css("background", "url(/pics/water.jpg)");
+                        $("#"+subLine).css("background-size", "contain");
+                    }
+                }
+                
+            }
+        }
+
+
+        //Toggles maps displayed and unlocks/locks userMap
+        function toggleMaps(id){
+            if (userMapToggle){
+                userMapToggle = false; //enables .hover function
+                drawUserMap(false);
+                $("#"+id).html("Enemy Map");
+            } else {
+                drawUserMap(true);
+                userMapToggle = true; //disables .hover function
+                $("#"+id).html("Your Map");
+            }
+        }
+
+        //TODO: filter bad moves --moves too far from head && collisions
+        //      change back color to change class like islands || do this for all colors lol
+        //      selecting and rotating correct images
+        //drawing == false is erasing
+        function drawUserMap(drawing){
+            for (let i = 0; i < userMap.length; i ++) {
+                //draws over island image, but intial just empties the background
+                if(drawing == true){
+                    if (i == userMap.length - 1){
+                        $('#'+userMap[i]).css("background", "url(/pics/user-sub.jpg)");
+                        $("#"+userMap[i]).css("background-size", "contain");
+                    } else{
+                        $('#'+userMap[i]).css("background", "url(/pics/straight-user-path.jpg)");
+                        $("#"+userMap[i]).css("background-size", "contain");
+                    }   
+                } else {
+                    $('#'+userMap[i]).css("background", "url(/pics/water.jpg)");
+                    $("#"+userMap[i]).css("background-size", "contain");
+                }    
+            }
+        }
+
+        //currently just resets userMap
+        //TODO: reset everything?
+        function resetMaps(){
+            drawUserMap(false);
+            userMap = [];
+        }
+
+        //fix magic number somehow...idk im too tired
+        function damage(x){
+            //psuedo damage variable/class
+            modifyProgress("health-bar", -4);
+        }
+
+        //create a new map
+        //alert prompts user map size
+        //function - to test dynamic map sizing
+        function newMap(){
+            $(".box").remove();
+            mapSize = prompt("New Grid Size?", "Thanks")
+            createGrid(mapSize);
+            generateTerrain(parentIslandGenerationThreshold, childIslandGenerationThreshold);
+        }
+
+        $(document).ready(function(){
+
+            createGrid(mapSize); //TODO: add argument to change board size
+            generateTerrain(/*gameBoard.getParentIslandGenerationThreshold()*/parentIslandGenerationThreshold, /*gameBoard.getChildIslandGenerationThreshold()*/childIslandGenerationThreshold);
+
+            drawUserMap(true); 
+
+            //displays enemyMap array relative to user mouse when userMapToggle is false
+            $(document).on('mouseenter', '.box',function(){
+                if (userMapToggle == false){
+                    drawEnemyMap(this.id, true); //argument is id of box being hovered over
+                }
+            });
+
+            //clears enemyMap array after user mouse leaves .box when userMapToggle is false            
+            $(document).on('mouseleave', '.box',function(){
+                if (userMapToggle == false){
+                    drawEnemyMap(this.id, false); //argument is id of box being hovered over
+                } 
+            });
+
+            //clears userMap and generates a new grid based on user prompt
+            $("#btn-new-map").click(function(){
+                userMap = [];
+                $(".box").remove();
+                mapSize = prompt("New Grid Size?", "");
+                createGrid(mapSize);
+                generateTerrain(parentIslandGenerationThreshold, childIslandGenerationThreshold);
+            });
+
+            //registers click event on .box elements
+            $(document).on('click', '.box', function(){
+                if(userMapToggle == true){
+                    // TODO: check if valid move
+                    if ($(this).hasClass("island") == false){
+                        userMap.push($(this).attr('id'));
+                        drawUserMap(true);
+                    } else {damage("user");} //TODO: make damage addressable 
+                }
+            });
+
+            resizeWrapper();
+
+        });
+
+        //function designed to increment/ decrement progress bars
+        function modifyProgress(progressBar, progressBarDenominator) {
+
+            //Find the maximum length of the progress bar            
+            let masterProgressBarWidth = parseInt($('#master-progress-bar').css("width"),10);
+
+            //Find the current length of the progress bar
+            let progressBarWidth = parseInt($('#' + progressBar).css("width"),10);
+
+            //Find Numerator of progress bar completion fraction --- Math.round is called to give a whole number
+            //Using progressBarDenominator in proportion ---   currentWidth/maxWidth = x/denominator(unit size)
+            //progressBarDenominator can be negative (to allow for bars to move backwards), so Math.abs is called
+            let progressBarNumerator = Math.round((Math.abs(progressBarDenominator)*progressBarWidth)/masterProgressBarWidth);
+            
+            //Math.sign checks to see if progressBarDenominator is a negative number, if it is negative, the associated bar is supposed to go from full to empty
+            //checks to see if a progress bar has reached its Max
+            if ((Math.sign(progressBarDenominator) == -1 && progressBarNumerator > 0) || //negative sign, so check if progress bar is not empty 0
+                (Math.sign(progressBarDenominator) == 1 && progressBarNumerator < progressBarDenominator)) { //positive sign so check to see if progressbar has room to expand -> numerator == denominator
+                
+                //numerator of progress bar completion fraction incremented according to progressBarDenominator sign
+                progressBarNumerator = progressBarNumerator + Math.sign(progressBarDenominator);
+
+                //calculate percentage from progress bar level fraction and use Math.abs to remove negative from progressBarDenominator
+                let newPercent = Math.abs(progressBarNumerator/progressBarDenominator*100);
+                
+                //assign progress bar the calculated percentage
+                document.getElementById(progressBar).style.width = newPercent + '%';
+
+                //display fraction on progress bar so the User can see it
+                document.getElementById(progressBar).innerHTML = progressBarNumerator + '/' + Math.abs(progressBarDenominator);
+            
+            //enter else statement if progress bars are full (full or empty, depending on the intended direction of the progress bar)
+            //progress bars will be reset to initial states as well as the displayed fraction
+            } else {
+                
+                if (Math.sign(progressBarDenominator) == -1){
+                    document.getElementById(progressBar).style.width = '100%';
+                    document.getElementById(progressBar).innerHTML = Math.abs(progressBarDenominator) + '/' + Math.abs(progressBarDenominator);
+                } else {
+                    document.getElementById(progressBar).style.width = '0%';
+                    document.getElementById(progressBar).innerHTML = '0/' + Math.abs(progressBarDenominator);
+                }
+            }         
+        }
+        
+    </script>
+
+    
+</body>
+</html>
